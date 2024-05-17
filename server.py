@@ -24,15 +24,22 @@ Idea = collections.namedtuple('Idea', 'id idea count')
 
 @app.route("/add-idea", methods=['post'])
 def add_idea():
-  cursor = get_db().cursor()
-  cursor.execute('insert into ideas (idea, count) values (?, 1);', [flask.request.form['idea']])
-  get_db().commit()
+  db = get_db()
+  db.execute('insert into ideas (idea, count) values (?, 1);', [flask.request.form['idea']])
+  db.commit()
+  return flask.redirect('/')
+
+@app.route("/bump-idea", methods=['post'])
+def bump_idea():
+  db = get_db()
+  db.execute('update ideas set count = count + 1 where id = ?;', [flask.request.form['id']])
+  db.commit()
   return flask.redirect('/')
 
 @app.route("/")
 def list_ideas():
   cursor = get_db().cursor()
-  query = cursor.execute('select id, idea, count from ideas').fetchall()
+  query = cursor.execute('select id, idea, count from ideas order by count desc').fetchall()
   ideas = []
   for (id, idea, count) in query:
     ideas.append(Idea(id, idea, count))

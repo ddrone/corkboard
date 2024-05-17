@@ -16,7 +16,12 @@
       <td>{{ idea.id }}</td>
       <td>{{ idea.idea }}</td>
       <td>{{ idea.count }}</td>
-      <td>TODO</td>
+      <td>
+        <form action="/bump-idea" method="post">
+          <input type="hidden" name="id" value="{{ idea.id }}" />
+          <input type="submit" value="+" />
+        </form>
+      </td>
     </tr>
     {% endfor %}
   </table>
