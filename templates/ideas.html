@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block body %}
+  <table>
+    <tr>
+      <th>Idea</th>
+      <th>Counter</th>
+      <th>Bump</th>
+    </tr>
+    {% for idea in ideas %}
+    <tr>
+      <td>{{ idea.idea }}</td>
+      <td>{{ idea.count }}</td>
+      <td>TODO</td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endblock %}

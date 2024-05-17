@@ -6,4 +6,4 @@ PORT=5000
 # Worst case scenario, one would just have to F5 in the browser window.
 sleep .2 && xdg-open http://localhost:$PORT/ &
 
-FLASK_APP=server flask run --port $PORT
+FLASK_APP=server flask run --port $PORT --reload
