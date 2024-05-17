@@ -2,8 +2,17 @@
 
 import argparse
 import os
+import sqlite3
 
 db_filename = 'ideas.db'
+
+db_init_script = """
+  create table ideas(
+    id integer primary key autoincrement,
+    idea text,
+    count integer
+  );
+"""
 
 def db_exists():
   return os.path.exists(db_filename)
@@ -21,9 +30,14 @@ def init():
     print('Database exists already!')
     return
 
-  # TODO: also check the existence of file db_filename,
-  # display a warning if it does, in fact, exist
-  print('init: not implemented yet')
+  try:
+    conn = sqlite3.connect(db_filename)
+    conn.execute(db_init_script)
+    conn.close()
+  except Exception as e:
+    print('Error while creating a database, removing the intermediate result')
+    os.remove(db_filename)
+    raise e
 
 def setup_argparse():
   parser = argparse.ArgumentParser(
