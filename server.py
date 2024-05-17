@@ -20,14 +20,14 @@ def close_connection(_e):
   if db is not None:
     db.close()
 
-Idea = collections.namedtuple('Idea', 'idea count')
+Idea = collections.namedtuple('Idea', 'id idea count')
 
 @app.route("/")
 def list_ideas():
   cursor = get_db().cursor()
-  query = cursor.execute('select idea, count from ideas').fetchall()
+  query = cursor.execute('select id, idea, count from ideas').fetchall()
   ideas = []
-  for (idea, count) in query:
-    ideas.append(Idea(idea, count))
+  for (id, idea, count) in query:
+    ideas.append(Idea(id, idea, count))
   cursor.close()
   return flask.render_template('ideas.html', ideas=ideas)
