@@ -14,10 +14,29 @@ db_init_script = """
   );
 """
 
+db_insert_script = """
+  insert into ideas (idea, count) values (
+    ?, 1
+  );
+"""
+
+def create_idea(conn: sqlite3.Connection, idea: str):
+  conn.execute(db_insert_script, [idea])
+
 def db_exists():
   return os.path.exists(db_filename)
 
-def serve():
+def idea_subcommand(args):
+  if not db_exists():
+    print('Database does not exist, create using \'init\' subcommand first!')
+    return
+
+  conn = sqlite3.connect(db_filename)
+  create_idea(conn, args.idea)
+  conn.commit()
+  conn.close()
+
+def serve(_args):
   if not db_exists():
     print('Database does not exist, create using \'init\' subcommand first!')
     return
@@ -25,7 +44,7 @@ def serve():
   # TODO: check the existence of file db_filename
   print('serve: not implemented yet')
 
-def init():
+def init(_args):
   if db_exists():
     print('Database exists already!')
     return
@@ -43,20 +62,27 @@ def setup_argparse():
   parser = argparse.ArgumentParser(
     prog='corkboard',
     description='A scratchpad for project ideas')
-  parser.set_defaults(func=serve)
-
+  parser.set_defaults(subcommand = 'root')
   subparsers = parser.add_subparsers()
-  parser_serve = subparsers.add_parser('serve')
-  parser_serve.set_defaults(func=serve)
+  handlers = {'root': serve}
 
-  parser_create = subparsers.add_parser('init')
-  parser_create.set_defaults(func=init)
+  def add_subparser(name, handler):
+    handlers[name] = handler
+    subparser = subparsers.add_parser(name)
+    subparser.set_defaults(subcommand = name)
+    return subparser
 
-  return parser
+  add_subparser('serve', serve)
+  add_subparser('init', init)
+  parser_idea = add_subparser('idea', idea_subcommand)
+  parser_idea.add_argument('idea')
+
+  return (parser, handlers)
 
 def main():
-  parser = setup_argparse()
-  parser.parse_args().func()
+  (parser, handlers) = setup_argparse()
+  args = parser.parse_args()
+  handlers[args.subcommand](args)
 
 if __name__ == "__main__":
   main()
