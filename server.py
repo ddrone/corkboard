@@ -22,6 +22,13 @@ def close_connection(_e):
 
 Idea = collections.namedtuple('Idea', 'id idea count')
 
+@app.route("/add-idea", methods=['post'])
+def add_idea():
+  cursor = get_db().cursor()
+  cursor.execute('insert into ideas (idea, count) values (?, 1);', [flask.request.form['idea']])
+  get_db().commit()
+  return flask.redirect('/')
+
 @app.route("/")
 def list_ideas():
   cursor = get_db().cursor()

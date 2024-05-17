@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
+  <form action="/add-idea" method="post">
+    <textarea name="idea"></textarea>
+    <input type="submit" value="Add idea" />
+  </form>
   <table>
     <tr>
       <th>ID</th>
