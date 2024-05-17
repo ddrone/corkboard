@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+# A git pre-commit hook that checks whether the source files are short enough
+# One way to install it:
+#   $ ln -s tools/precommit_hook .git/hooks/pre-commit
+
 import subprocess
 import sys
 
