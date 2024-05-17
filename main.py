@@ -1,14 +1,26 @@
 #!/usr/bin/env python3
 
 import argparse
+import os
 
 db_filename = 'ideas.db'
 
+def db_exists():
+  return os.path.exists(db_filename)
+
 def serve():
+  if not db_exists():
+    print('Database does not exist, create using \'init\' subcommand first!')
+    return
+
   # TODO: check the existence of file db_filename
   print('serve: not implemented yet')
 
 def init():
+  if db_exists():
+    print('Database exists already!')
+    return
+
   # TODO: also check the existence of file db_filename,
   # display a warning if it does, in fact, exist
   print('init: not implemented yet')
